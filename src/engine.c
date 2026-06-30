@@ -9,7 +9,14 @@ void run_engine(Engine *e) {
     e->running = true;
     SDL_Event event;
 
+    uint64_t last_time = SDL_GetPerformanceCounter();
+    double freq = (double)SDL_GetPerformanceFrequency();
+
     while (e->running) {    
+        uint64_t cur_time = SDL_GetPerformanceCounter();
+        double delta = (cur_time - last_time) / freq;
+        last_time = cur_time;
+
         while (SDL_PollEvent(&event)) {
             handle_event(e, event.type); 
         }
