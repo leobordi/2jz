@@ -1,22 +1,30 @@
 #include "window.h"
 
-WindowCtx create_window(int w, int h) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-        printf("Errore di inizializzazione: %s\n", SDL_GetError());
+void init_window(WindowCtx *ctx, int w, int h) {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s", SDL_GetError());
         exit(-1);
     }
     
-    WindowCtx ctx;
-    ctx.window = SDL_CreateWindow("Test engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_SHOWN); 
-    if (!ctx.window) {
-        printf("Errore di creazione finestra!\n");
+    if (!SDL_CreateWindowAndRenderer("Test engine", w, h, SDL_WINDOW_RESIZABLE, &ctx->window, &ctx->renderer)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
         exit(-1);
-    } 
-    
-    return ctx;
+    }
+
+    ctx->texture = SDL_CreateTexture(ctx->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+    if (!ctx->texture) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    SDL_SetRenderTarget(ctx->renderer, ctx->texture);
+    SDL_SetRenderDrawColor(ctx->renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_RenderClear(ctx->renderer);
+    SDL_RenderPresent(ctx->renderer);
 }
 
 void destroy_window(WindowCtx *ctx) {
+    SDL_DestroyTexture(ctx->texture);
     SDL_DestroyRenderer(ctx->renderer);
     SDL_DestroyWindow(ctx->window);
     SDL_Quit(); 

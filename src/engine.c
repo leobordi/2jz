@@ -1,10 +1,8 @@
 #include <engine.h>
 
-Engine create_engine() {
-    Engine e;
-    e.winCtx = create_window(1500, 900);
-    e.running = false;
-    return e;
+void create_engine(Engine *e) {
+    init_window(&e->winCtx, 1500, 900);
+    e->running = false;
 }
 
 void run_engine(Engine *e) {
@@ -16,6 +14,8 @@ void run_engine(Engine *e) {
             handle_event(e, event.type); 
         }
 
+        SDL_RenderClear(e->winCtx.renderer);
+        SDL_RenderPresent(e->winCtx.renderer);
         SDL_Delay(16);
     }
 
@@ -24,7 +24,7 @@ void run_engine(Engine *e) {
 
 void handle_event(Engine *e, uint32_t type) {
     switch (type) {
-        case SDL_QUIT:
+        case SDL_EVENT_QUIT:
             e->running = false;
             break;
     }

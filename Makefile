@@ -4,7 +4,7 @@ TARGET = 2jz
 # Compilatore e flag
 CC = gcc
 CFLAGS = -O2 -Wall -Wextra -Iinclude
-LIBS = -lSDL2
+LIBS = -lSDL3
 
 # Cartelle
 SRC_DIR = src
