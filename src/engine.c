@@ -20,8 +20,18 @@ void run_engine(Engine *e) {
         while (SDL_PollEvent(&event)) {
             handle_event(e, event.type); 
         }
-
+        
+        SDL_SetRenderDrawColor(e->winCtx.renderer, 20, 20, 30, 255);
         SDL_RenderClear(e->winCtx.renderer);
+
+        SDL_SetRenderDrawColor(e->winCtx.renderer, 255, 0, 0, 255);
+        SDL_FRect rect;
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = 600;
+        rect.h = 500;
+        SDL_RenderFillRect(e->winCtx.renderer, &rect);
+
         SDL_RenderPresent(e->winCtx.renderer);
         SDL_Delay(16);
     }
